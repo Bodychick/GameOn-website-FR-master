@@ -21,6 +21,8 @@ const warningMessage = document.querySelector("p.warning-message");
 // Récupération des inputs
 const firstName= document.getElementById('first');
 const lastName= document.getElementById('last');
+const emailInput = document.getElementById("email");
+const email = emailInput.value;
 
 //Listener sur les inputs firstname et lastname
 firstName.addEventListener('focusout',function checkTheName() {
@@ -31,16 +33,28 @@ lastName.addEventListener('focusout',function checkTheName() {
   checkName(lastName,"lastNameID");
 });
 
+
+/* CHECK DE L'ADRESSE MAIL AVEC AFFICHAGE D'UN MESSAGE SI PROBLEME */
+emailInput.addEventListener("focusout",function testEmail(email){
+  console.log(validateEmail(email));
+  if (validateEmail(email) && document.getElementById("checkMail")!=null) {
+    // L'email est valide, continuer avec le traitement du formulaire
+    const element= document.getElementById("checkMail");
+    element.parentElement.removeChild(element);
+  } 
+  else if (validateEmail(email) == false && document.getElementById("checkMail")==null) {
+    // L'email n'est pas valide, afficher un message d'erreur
+    createElement("p","checkMail",emailInput,"Veuillez entrer un email valide");
+  }
+})
+
 /* Vérifier qu'un nom et un prénom sont renseignés */
 function checkName($name,$id) {
-  console.log($name.value.length);
   if ($name.value.length<=2 && document.getElementById($id) == null )
   {
-    console.log("Inferieur à 2")
     createElement("p",$id,$name,"Veuillez entrer votre prénom");
   }
   else if($name.value.length>2 && document.getElementById($id) != null) {
-    console.log("jSupp à 2")
     const element= document.getElementById($id);
     element.parentElement.removeChild(element);
   }
@@ -81,6 +95,7 @@ function checkRadio() {
   }
 }
 
+
 function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir une information"){
   // Création de l'élément à insérer
   console.log("je sui en create element")
@@ -92,6 +107,15 @@ function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir u
   // Insertion de l'élément créé après l'élément <p> ayant la classe "text-label"
   $element.insertAdjacentElement("afterend", errorMessage);
 }
+
+function validateEmail(email) {
+  // Expression régulière pour valider un email
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
+  
+  // Vérifier si l'email est valide en utilisant test() de RegExp
+  return regex.test(email);
+}
+
 
 //Alert quand bouton submit cliqué
 submitButton.addEventListener("click",function(){
