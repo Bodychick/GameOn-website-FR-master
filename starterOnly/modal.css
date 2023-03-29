@@ -411,7 +411,7 @@ input[data-error]::after {
   font-size: 16px;
 }
 .hero-section {
-  min-height: 93vh;
+  /*min-height: 93vh;*/
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -454,7 +454,6 @@ input[data-error]::after {
 }
 .btn-signup {
   outline: none;
-  text-transform: capitalize;
   font-size: 1.3rem;
   padding: 15px 23px;
   margin: 0;
@@ -494,6 +493,7 @@ footer {
     background: #fff;
     color: #000;
     padding: 20px;
+    min-width: auto;
   }
   .hero-content::after {
     content: unset;
