@@ -20,6 +20,8 @@ const firstName= document.getElementById('first');
 const lastName= document.getElementById('last');
 const emailInput = document.getElementById("email");
 
+
+
 const birthDate = document.getElementById("birthdate");
 var today = new Date();
 const annee = today.getFullYear();
@@ -34,6 +36,15 @@ const checkBox1=document.getElementById("checkbox1");
 //CONST REGEX
 const regexName = /[a-zA-Z-]{3,}$/;
 const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
+
+//set attribute  
+firstName.setAttribute("minlength","2")
+firstName.setAttribute("pattern",regexName)
+
+lastName.setAttribute("minlength","2")
+lastName.setAttribute("pattern",regexName)
+
+emailInput.setAttribute("pattern",regexMail)
 
 //Nombre d'évènements déjà participé
 const quantity = document.getElementById("quantity");
