@@ -4,7 +4,7 @@
 3. Il n'y a aucune dépendance ;
 4. Vous ne devez utiliser que du CSS personnalisé et du JavaScript pur, sans jQuery, Bootstrap ou autre librairie.
 
-# Ce que jue j'ai modifié :
+# Ce que j'ai modifié :
 1. Lang fr
 2. Checkbox les conditions d'utilisation
 3. "Je je souhaite ..." en je.

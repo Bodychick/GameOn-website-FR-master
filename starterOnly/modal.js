@@ -15,10 +15,6 @@ const formData = document.querySelectorAll(".formData");
 const radios = document.querySelectorAll(".checkbox-input");
 const formDataRadio = document.getElementById("formDataRadio");
 
-// Récupération de l'élément <p> ayant la classe "text-label"
-//const textLabel = document.querySelector("p.text-label");
-//const warningMessage = document.querySelector("p.warning-message");
-
 // Récupération des inputs
 const firstName= document.getElementById('first');
 const lastName= document.getElementById('last');
@@ -31,6 +27,13 @@ const mois = String(today.getMonth() + 1).padStart(2, '0');
 const jour = String(today.getDate()).padStart(2, '0');
 const todaysDate = `${annee}-${mois}-${jour}`;
 birthDate.max = todaysDate;
+
+//checkBoxConditionsGénérales
+const checkBox1=document.getElementById("checkbox1");
+
+//CONST REGEX
+const regexName = /[a-zA-Z-]{3,}$/;
+const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
 
 //Nombre d'évènements déjà participé
 const quantity = document.getElementById("quantity");
@@ -51,17 +54,17 @@ function launchModal() {
 }
 
 //Listener sur les inputs firstname et lastname
-firstName.addEventListener('focusout',function checkTheName() {
+firstName.addEventListener('change',function checkTheName() {
   checkName(firstName,"firstNameID");
 });
 
-lastName.addEventListener('focusout',function checkTheName() {
+lastName.addEventListener('change',function checkTheName() {
   checkName(lastName,"lastNameID");
 });
 
 
 /* CHECK DE L'ADRESSE MAIL AVEC AFFICHAGE D'UN MESSAGE SI PROBLEME */
-emailInput.addEventListener("focusout",function testEmail(){
+emailInput.addEventListener("change",function testEmail(){
   var email = emailInput.value;
   if (isValidateEmail(email) && document.getElementById("checkMail")!=null) {
     // L'email est valide, continuer avec le traitement du formulaire et il y a déjà un message affiché
@@ -75,7 +78,7 @@ emailInput.addEventListener("focusout",function testEmail(){
 })
 
 /* CHECK SI DATE DE NAISSANCE */
-birthDate.addEventListener("focusout", function checkBirthDate(){
+birthDate.addEventListener("change", function checkBirthDate(){
   const dateOfBirth=birthDate.value;
   if(dateOfBirth >= todaysDate && document.getElementById("birthdateID")== null){
     //On ajoute un message s'il y en a pas de mis encore
@@ -99,7 +102,7 @@ birthDate.addEventListener("focusout", function checkBirthDate(){
 
 });
 
-quantity.addEventListener("focusout",function checkQuantity(){
+quantity.addEventListener("change",function checkQuantity(){
   const quantityVal = quantity.value;
   console.log(quantity.value)
   if(quantityVal=="" && document.getElementById("quantityID")==null) {
@@ -118,15 +121,15 @@ quantity.addEventListener("focusout",function checkQuantity(){
 
 /* Vérifier qu'un nom et un prénom sont renseignés */
 function checkName($name,$id) {
-  if ($name.value.length<=2 && document.getElementById($id) == null )
+  console.log(regexName.test($name.value));
+  if (!regexName.test($name.value) && document.getElementById($id) == null )
   {
-    createElement("p",$id,$name,"2 caractères minimum sont nécessaires pour ce champ");
+    createElement("p",$id,$name,"3 caractères minimum sont nécessaires pour ce champ");
   }
-  else if($name.value.length>2 && document.getElementById($id) != null) {
+  else if(regexName.test($name.value) && document.getElementById($id) != null) {
     const element= document.getElementById($id);
     element.parentElement.removeChild(element);
   }
-
 }
 
 //CHECK SI Radio est coché
@@ -167,10 +170,8 @@ function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir u
 }
 
 function isValidateEmail(email) {
-  // Expression régulière pour valider un email
-  const regex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
   // Vérifier si l'email est valide en utilisant test() de RegExp
-  return regex.test(email);
+  return regexMail.test(email);
 }
 
 
