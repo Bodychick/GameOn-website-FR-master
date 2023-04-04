@@ -20,8 +20,6 @@ const firstName= document.getElementById('first');
 const lastName= document.getElementById('last');
 const emailInput = document.getElementById("email");
 
-
-
 const birthDate = document.getElementById("birthdate");
 var today = new Date();
 const annee = today.getFullYear();
@@ -30,11 +28,14 @@ const jour = String(today.getDate()).padStart(2, '0');
 const todaysDate = `${annee}-${mois}-${jour}`;
 birthDate.max = todaysDate;
 
+//Check RADIO
+let isRadioChecked=false;
+
 //checkBoxConditionsGénérales
 const checkBox1=document.getElementById("checkbox1");
 
 //CONST REGEX
-const regexName = /[a-zA-Z-]{3,}$/;
+const regexName = /^[a-zA-Z-]{3,}$/;
 const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
 
 //set attribute  
@@ -132,26 +133,26 @@ quantity.addEventListener("change",function checkQuantity(){
 
 /* Vérifier qu'un nom et un prénom sont renseignés */
 function checkName($name,$id) {
-  console.log(regexName.test($name.value));
-  if (!regexName.test($name.value) && document.getElementById($id) == null )
+  console.log($name.value);
+  if (regexName.test($name.value) == false && document.getElementById($id) == null )
   {
     createElement("p",$id,$name,"3 caractères minimum sont nécessaires pour ce champ");
   }
-  else if(regexName.test($name.value) && document.getElementById($id) != null) {
+  else if(regexName.test($name.value) == true && document.getElementById($id) != null) {
     const element= document.getElementById($id);
     element.parentElement.removeChild(element);
   }
 }
 
 //CHECK SI Radio est coché
-modalbg.addEventListener("mouseenter", function checkAllRadio(){
+/*radios.addEventListener("load", function checkAllRadio(){
   let isChecked = checkRadio();
   console.log(isChecked)  
   if (isChecked == false && document.getElementById("formDataRadio")==null){
-    createElement("p","formDataRadio",formDataRadio,"Veuillez sélectionner un lieu")
+    createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
   }
   else if (isChecked == true && document.getElementById("formDataRadio")!=null){
-    const element= document.getElementById("formDataRadio");
+    const element= document.getElementById("radioMessage");
     element.parentElement.removeChild(element);
   }
 });
@@ -159,13 +160,31 @@ modalbg.addEventListener("mouseenter", function checkAllRadio(){
 function checkRadio() {
   let isRadioChecked=false;
   radios.forEach((item)=> {
-    if(item.checked){
+    if(item.checked == true){
       isRadioChecked=true;
     }
   });
   return isRadioChecked;
-}
+}*/
 
+radios.forEach((item)=> {
+  item.addEventListener("focusout",function checkRadio(){
+    if (item.checked == false && document.getElementById("radioMessage")==null){
+      createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
+    }
+    else if (item.checked == true && document.getElementById("radioMessage")!=null){
+      const element= document.getElementById("radioMessage");
+      element.parentElement.removeChild(element);
+    }
+    else {
+      console.log("RADIO CHECKER")
+    }
+  })
+});
+
+function checkConditions(){
+  return checkBox1.value;
+}
 
 //Fonction pour créer un message d'erreur 
 function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir une information"){
@@ -188,6 +207,7 @@ function isValidateEmail(email) {
 
 //Alert quand bouton submit cliqué
 submitButton.addEventListener("submit",function(){
+  checkConditions();
   console.log('Click sur bouton');
   window.alert('Formulaire envoyé avec succès');
 });
