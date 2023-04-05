@@ -12,7 +12,7 @@ const closeButton = document.querySelector(".close");
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
-const radios = document.querySelectorAll(".checkbox-input");
+const radios = document.querySelectorAll("input[type=radio]");
 const formDataRadio = document.getElementById("formDataRadio");
 
 // Récupération des inputs
@@ -32,10 +32,10 @@ birthDate.max = todaysDate;
 let isRadioChecked=false;
 
 //checkBoxConditionsGénérales
-const checkBox1=document.getElementById("checkbox1");
+const checkbox1=document.getElementById("checkbox1");
 
 //CONST REGEX
-const regexName = /^[a-zA-Z-]{3,}$/;
+const regexName =/^[a-zA-Z-]{3,}$/;
 const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
 
 //set attribute  
@@ -66,17 +66,17 @@ function launchModal() {
 }
 
 //Listener sur les inputs firstname et lastname
-firstName.addEventListener('change',function checkTheName() {
+firstName.addEventListener("input",function checkTheName() {
   checkName(firstName,"firstNameID");
 });
 
-lastName.addEventListener('change',function checkTheName() {
+lastName.addEventListener("input",function checkTheName() {
   checkName(lastName,"lastNameID");
 });
 
 
 /* CHECK DE L'ADRESSE MAIL AVEC AFFICHAGE D'UN MESSAGE SI PROBLEME */
-emailInput.addEventListener("change",function testEmail(){
+emailInput.addEventListener("input",function testEmail(){
   var email = emailInput.value;
   if (isValidateEmail(email) && document.getElementById("checkMail")!=null) {
     // L'email est valide, continuer avec le traitement du formulaire et il y a déjà un message affiché
@@ -90,7 +90,7 @@ emailInput.addEventListener("change",function testEmail(){
 })
 
 /* CHECK SI DATE DE NAISSANCE */
-birthDate.addEventListener("change", function checkBirthDate(){
+birthDate.addEventListener("input", function checkBirthDate(){
   const dateOfBirth=birthDate.value;
   if(dateOfBirth >= todaysDate && document.getElementById("birthdateID")== null){
     //On ajoute un message s'il y en a pas de mis encore
@@ -114,7 +114,7 @@ birthDate.addEventListener("change", function checkBirthDate(){
 
 });
 
-quantity.addEventListener("change",function checkQuantity(){
+quantity.addEventListener("input",function checkQuantity(){
   const quantityVal = quantity.value;
   console.log(quantity.value)
   if(quantityVal=="" && document.getElementById("quantityID")==null) {
@@ -144,31 +144,10 @@ function checkName($name,$id) {
   }
 }
 
-//CHECK SI Radio est coché
-/*radios.addEventListener("load", function checkAllRadio(){
-  let isChecked = checkRadio();
-  console.log(isChecked)  
-  if (isChecked == false && document.getElementById("formDataRadio")==null){
-    createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
-  }
-  else if (isChecked == true && document.getElementById("formDataRadio")!=null){
-    const element= document.getElementById("radioMessage");
-    element.parentElement.removeChild(element);
-  }
-});
-
-function checkRadio() {
-  let isRadioChecked=false;
-  radios.forEach((item)=> {
-    if(item.checked == true){
-      isRadioChecked=true;
-    }
-  });
-  return isRadioChecked;
-}*/
-
+//Pour tous les radios,on check s'il y a un click
 radios.forEach((item)=> {
-  item.addEventListener("focusout",function checkRadio(){
+  item.addEventListener("click",function checkRadio(){
+    console.log(item.value)
     if (item.checked == false && document.getElementById("radioMessage")==null){
       createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
     }
@@ -183,8 +162,11 @@ radios.forEach((item)=> {
 });
 
 function checkConditions(){
-  return checkBox1.value;
+  console.log(checkbox1.checked)
+  return checkbox1.checked;
 }
+
+checkbox1.addEventListener("click",checkConditions)
 
 //Fonction pour créer un message d'erreur 
 function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir une information"){
@@ -204,12 +186,58 @@ function isValidateEmail(email) {
   return regexMail.test(email);
 }
 
+function toutesLesValeursSontVraies(valideForm) {
+  for (var val in valideForm) {
+    if (valideForm[val] === false) {
+      return false;
+    }
+  }
+  return true;
+}
 
 //Alert quand bouton submit cliqué
 submitButton.addEventListener("submit",function(){
-  checkConditions();
-  console.log('Click sur bouton');
-  window.alert('Formulaire envoyé avec succès');
+  var valideForm = {
+    "first":false,
+    "last":false,
+    "email":false,
+    "birthDate":false,
+    "quantity":false,
+    "lieu":false,
+    "checkbox1":false,
+  }
+  
+  if(document.getElementById("first")!="" && document.getElementById("first")!=null){
+    valideForm["first"] == true;
+  }
+  if(document.getElementById("last")!="" && document.getElementById("last")!=null){
+    valideForm["last"] == true;
+  }
+  if(document.getElementById("email")!="" && document.getElementById("email")!=null){
+    valideForm["email"] == true;
+  }
+  if(document.getElementById("birthdate")!="" && document.getElementById("birthdate")!=null){
+    valideForm["birthDate"] == true;
+  }
+  if(document.getElementById("quantity")!="" && document.getElementById("quantity")!=null){
+    valideForm["quantity"] == true;
+  }
+  /*if(document.getElementById("lieu")!="" && document.getElementById("lieu")!=null){
+    valideForm["lieu"] == true;
+  }
+  else {
+    createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
+  }*/
+
+  if(checkConditions()){
+    valideForm["checkbox1"] == true;
+  }
+
+  if (toutesLesValeursSontVraies(valideForm)) {
+    console.log('Click sur bouton');
+    window.alert('Formulaire envoyé avec succès');
+  }
+  
 });
 
 
