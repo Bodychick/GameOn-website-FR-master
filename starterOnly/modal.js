@@ -28,6 +28,16 @@ const jour = String(today.getDate()).padStart(2, '0');
 const todaysDate = `${annee}-${mois}-${jour}`;
 birthDate.max = todaysDate;
 
+var valideForm = {
+  "first":false,
+  "last":false,
+  "email":false,
+  "birthDate":false,
+  "quantity":false,
+  "lieu":false,
+  "checkbox1":false,
+}
+
 //Check RADIO
 let isRadioChecked=false;
 
@@ -37,15 +47,6 @@ const checkbox1=document.getElementById("checkbox1");
 //CONST REGEX
 const regexName =/^[a-zA-Z-]{3,}$/;
 const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
-
-//set attribute  
-firstName.setAttribute("minlength","2")
-firstName.setAttribute("pattern",regexName)
-
-lastName.setAttribute("minlength","2")
-lastName.setAttribute("pattern",regexName)
-
-emailInput.setAttribute("pattern",regexMail)
 
 //Nombre d'évènements déjà participé
 const quantity = document.getElementById("quantity");
@@ -76,69 +77,83 @@ lastName.addEventListener("input",function checkTheName() {
 
 
 /* CHECK DE L'ADRESSE MAIL AVEC AFFICHAGE D'UN MESSAGE SI PROBLEME */
-emailInput.addEventListener("input",function testEmail(){
+emailInput.addEventListener("input",testEmail)
+
+function testEmail(){
   var email = emailInput.value;
   if (isValidateEmail(email) && document.getElementById("checkMail")!=null) {
     // L'email est valide, continuer avec le traitement du formulaire et il y a déjà un message affiché
+    valideForm["email"]=true;
     const element= document.getElementById("checkMail");
     element.parentElement.removeChild(element);
   } 
   else if (isValidateEmail(email) == false && document.getElementById("checkMail")==null) {
     // L'email n'est pas valide, afficher un message d'erreur et il n'y a aucun message d'affiché
     createElement("p","checkMail",emailInput,"Veuillez entrer un email valide");
+    valideForm["email"]=false;
   }
-})
+}
 
 /* CHECK SI DATE DE NAISSANCE */
-birthDate.addEventListener("input", function checkBirthDate(){
-  const dateOfBirth=birthDate.value;
+birthDate.addEventListener("change", checkBirthDate);
+
+function checkBirthDate(){
+  var dateOfBirth=birthDate.value;
   if(dateOfBirth >= todaysDate && document.getElementById("birthdateID")== null){
     //On ajoute un message s'il y en a pas de mis encore
     createElement("p","birthdateID",birthDate,"Veuillez entrer une date antérieure à celle d'aujourd'hui");
     console.log("Pas de message + Date sup ou égale à today")
+    valideForm["birthDate"]=false;
   }
   else if(dateOfBirth >= todaysDate && document.getElementById("birthdateID")!= null){
     //DO NOTHING parce que il y a déjà un message d'affiché
     console.log("On laisse tout si message et date tjs today ou sup")
+    valideForm["birthDate"]=false;
   }
   else if(dateOfBirth == "" && document.getElementById("birthdateID") == null){
     //On retire le message dans les autres cas
     createElement("p","birthdateID",birthDate,"Veuillez entrer votre date de naissance");
     console.log("On message si date non rentré et pas de messages")
+    valideForm["birthDate"]=false;
   }
-  else if(dateOfBirth < todaysDate && document.getElementById("birthdateID") != null) {
+  else if(dateOfBirth < todaysDate && document.getElementById("birthdateID") != null && dateOfBirth != "") {
+    valideForm["birthDate"]=true;
     console.log("Si date est bonne et un message on enlève")
     const element= document.getElementById("birthdateID");
     element.parentElement.removeChild(element);
   }
 
-});
+}
 
-quantity.addEventListener("input",function checkQuantity(){
+quantity.addEventListener("input",checkQuantity);
+function checkQuantity(){
   const quantityVal = quantity.value;
-  console.log(quantity.value)
   if(quantityVal=="" && document.getElementById("quantityID")==null) {
-    createElement("p","quantityID",quantity,"Veuillez sélectionner une option");
+    valideForm["quantity"]=false;
+    createElement("p","quantityID",quantity,"Veuillez remplir ce champ");
   } 
   else if (quantityVal=="" && document.getElementById("quantityID")!=null)
   {
+    valideForm["quantity"]=false;
     //ON LAISSE COMME C'EST
   }
   else if (quantityVal>=0 && document.getElementById("quantityID")!=null)
   {
+    valideForm["quantity"]=true;
     const element= document.getElementById("quantityID");
     element.parentElement.removeChild(element);
   }
-});
+}
 
 /* Vérifier qu'un nom et un prénom sont renseignés */
 function checkName($name,$id) {
-  console.log($name.value);
   if (regexName.test($name.value) == false && document.getElementById($id) == null )
   {
+    valideForm[$name.name]=false;
     createElement("p",$id,$name,"3 caractères minimum sont nécessaires pour ce champ");
   }
   else if(regexName.test($name.value) == true && document.getElementById($id) != null) {
+    valideForm[$name.name]=true;
     const element= document.getElementById($id);
     element.parentElement.removeChild(element);
   }
@@ -162,7 +177,20 @@ radios.forEach((item)=> {
 });
 
 function checkConditions(){
-  console.log(checkbox1.checked)
+  console.log(checkbox1.checked);
+  if (checkbox1.checked == false && document.getElementById("checkbox1Message")==null){
+    console.log("Veuillez cocher la case")
+    valideForm["checkbox1"]=false;
+    //createElement("p","checkbox1Message",checkbox1,"Veuillez cocher la case")
+  } 
+  else if (checkbox1.checked == false && document.getElementById("checkbox1Message")!=null) {
+    //LAISSER LE MESSAGE
+    valideForm["checkbox1"]=false;
+  } else if(checkbox1.checked == true && document.getElementById("checkbox1Message")==null){
+    valideForm["checkbox1"]=true;
+    //const element= document.getElementById("checkbox1Message");
+    //element.parentElement.removeChild(element);
+  }
   return checkbox1.checked;
 }
 
@@ -196,49 +224,44 @@ function toutesLesValeursSontVraies(valideForm) {
 }
 
 //Alert quand bouton submit cliqué
-submitButton.addEventListener("submit",function(){
-  var valideForm = {
-    "first":false,
-    "last":false,
-    "email":false,
-    "birthDate":false,
-    "quantity":false,
-    "lieu":false,
-    "checkbox1":false,
-  }
-  
-  if(document.getElementById("first")!="" && document.getElementById("first")!=null){
+submitButton.addEventListener("click",function(event){
+  console.log(birthDate.value)
+  if(regexName.test(firstName.value)==true){
     valideForm["first"] == true;
   }
-  if(document.getElementById("last")!="" && document.getElementById("last")!=null){
+  else {
+    valideForm["first"] == false;
+    checkName(firstName,"firstNameID");
+  }
+
+  if(regexName.test(lastName.value)==true){
     valideForm["last"] == true;
   }
-  if(document.getElementById("email")!="" && document.getElementById("email")!=null){
+  else {
+    valideForm["last"] == false;
+    checkName(lastName,"lastNameID");
+  }
+  if(regexMail.test(emailInput.value)==true){
     valideForm["email"] == true;
   }
-  if(document.getElementById("birthdate")!="" && document.getElementById("birthdate")!=null){
-    valideForm["birthDate"] == true;
-  }
-  if(document.getElementById("quantity")!="" && document.getElementById("quantity")!=null){
-    valideForm["quantity"] == true;
-  }
-  /*if(document.getElementById("lieu")!="" && document.getElementById("lieu")!=null){
-    valideForm["lieu"] == true;
-  }
   else {
-    createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
-  }*/
-
-  if(checkConditions()){
-    valideForm["checkbox1"] == true;
+    valideForm["email"] == false;
+    testEmail();
   }
 
+  checkBirthDate();
+  checkConditions();
+  checkQuantity();
+
+  console.log(valideForm)
   if (toutesLesValeursSontVraies(valideForm)) {
-    console.log('Click sur bouton');
-    window.alert('Formulaire envoyé avec succès');
+    alert('Formulaire envoyé avec succès');
   }
-  
+
+  event.preventDefault();
 });
+
+
 
 
 

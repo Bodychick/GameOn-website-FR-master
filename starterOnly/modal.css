@@ -70,8 +70,7 @@ img {
 .warning-message{
   margin-top:5px ;
   color: red;
-  background-color: rgba(255, 0, 0, 0.349);
-  border: 1px solid red;
+  /*border: 1px solid red;*/
   border-radius: 30px;
   font-size: 14px;
 }
