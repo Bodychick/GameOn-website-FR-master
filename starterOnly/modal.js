@@ -43,6 +43,7 @@ let isRadioChecked=false;
 
 //checkBoxConditionsGénérales
 const checkbox1=document.getElementById("checkbox1");
+const checkbox1Label=document.querySelector(".checkbox2-label");
 
 //CONST REGEX
 const regexName =/^[a-zA-Z-]{3,}$/;
@@ -187,20 +188,22 @@ function checkRadio(){
   }
 }
 
+checkbox1.addEventListener("click",checkConditions);
+
 function checkConditions(){
   console.log(checkbox1.checked);
   if (checkbox1.checked == false && document.getElementById("checkbox1Message")==null){
-    console.log("Veuillez cocher la case")
+    console.log("Veuillez cocher la case");
     valideForm["checkbox1"]=false;
-    //createElement("p","checkbox1Message",checkbox1,"Veuillez cocher la case")
+    createElement("p","checkbox1Message",checkbox1Label,"Veuillez cocher la case");
   } 
   else if (checkbox1.checked == false && document.getElementById("checkbox1Message")!=null) {
     //LAISSER LE MESSAGE
     valideForm["checkbox1"]=false;
-  } else if(checkbox1.checked == true && document.getElementById("checkbox1Message")==null){
+  } else if(checkbox1.checked == true && document.getElementById("checkbox1Message")!=null){
     valideForm["checkbox1"]=true;
-    //const element= document.getElementById("checkbox1Message");
-    //element.parentElement.removeChild(element);
+    const element= document.getElementById("checkbox1Message");
+    element.parentElement.removeChild(element);
   }
   return checkbox1.checked;
 }
