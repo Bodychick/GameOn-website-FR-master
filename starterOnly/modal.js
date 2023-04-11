@@ -162,19 +162,30 @@ function checkName($name,$id) {
 //Pour tous les radios,on check s'il y a un click
 radios.forEach((item)=> {
   item.addEventListener("click",function checkRadio(){
-    console.log(item.value)
-    if (item.checked == false && document.getElementById("radioMessage")==null){
-      createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu")
-    }
-    else if (item.checked == true && document.getElementById("radioMessage")!=null){
+    valideForm["lieu"]=true;
+    if (item.checked == true && document.getElementById("radioMessage")!=null){
       const element= document.getElementById("radioMessage");
       element.parentElement.removeChild(element);
     }
-    else {
-      console.log("RADIO CHECKER")
-    }
   })
 });
+
+function checkRadio(){
+  valideForm["lieu"]=false;
+  radios.forEach((item)=> {
+    if(item.checked==true){
+      valideForm["lieu"]=true;
+    }
+  }); 
+  console.log(valideForm["lieu"]==false)
+  if (valideForm["lieu"]==false && document.getElementById("radioMessage")==null){
+    createElement("p","radioMessage",formDataRadio,"Veuillez sélectionner un lieu");
+  }
+  else if (valideForm["lieu"]==true && document.getElementById("radioMessage")!=null){
+    const element= document.getElementById("radioMessage");
+    element.parentElement.removeChild(element);
+  }
+}
 
 function checkConditions(){
   console.log(checkbox1.checked);
@@ -199,7 +210,7 @@ checkbox1.addEventListener("click",checkConditions)
 //Fonction pour créer un message d'erreur 
 function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir une information"){
   // Création de l'élément à insérer
-  //console.log("je suis en create element")
+  console.log("je suis en create element")
   const errorMessage = document.createElement($typeElem);
   errorMessage.setAttribute("id",$id);
   errorMessage.textContent = $message;
@@ -252,13 +263,17 @@ submitButton.addEventListener("click",function(event){
   checkBirthDate();
   checkConditions();
   checkQuantity();
-
+  checkRadio();
   console.log(valideForm)
   if (toutesLesValeursSontVraies(valideForm)) {
+    modalbg.style.display="none";
     alert('Formulaire envoyé avec succès');
   }
+  else {
+    event.preventDefault();
+  }
 
-  event.preventDefault();
+
 });
 
 
