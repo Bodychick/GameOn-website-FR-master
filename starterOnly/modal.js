@@ -123,6 +123,9 @@ function checkBirthDate(){
     const element= document.getElementById("birthdateID");
     element.parentElement.removeChild(element);
   }
+  else {
+    valideForm["birthDate"]=true;
+  }
 
 }
 
@@ -143,6 +146,9 @@ function checkQuantity(){
     valideForm["quantity"]=true;
     const element= document.getElementById("quantityID");
     element.parentElement.removeChild(element);
+  }
+  else {
+    valideForm["quantity"]=true;
   }
 }
 
@@ -201,11 +207,14 @@ function checkConditions(){
     //LAISSER LE MESSAGE
     valideForm["checkbox1"]=false;
   } else if(checkbox1.checked == true && document.getElementById("checkbox1Message")!=null){
+    console.log("JE SUIS VRAI")
     valideForm["checkbox1"]=true;
     const element= document.getElementById("checkbox1Message");
     element.parentElement.removeChild(element);
+  } else {
+    valideForm["checkbox1"]=true;
   }
-  return checkbox1.checked;
+  
 }
 
 checkbox1.addEventListener("click",checkConditions)
