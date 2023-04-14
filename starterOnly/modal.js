@@ -8,14 +8,10 @@ function editNav() {
 }
 
 // DOM Elements
-
-//Sélection de toutes les modals
-const modals = document.querySelectorAll(".bg-ground");
-
 // Sélection des modals séparemment pour gérer l'affichage au submit
 const modalbg = document.getElementById("modal-bg-ground");
 const modalBtn = document.querySelectorAll(".modal-btn");
-const formData = document.querySelectorAll(".formData");
+const monFormulaire = document.getElementsByName("reserve");
 
 const radios = document.querySelectorAll("input[type=radio]");
 const formDataRadio = document.getElementById("formDataRadio");
@@ -66,10 +62,10 @@ title.classList.add("center")
 modalBody.appendChild(title);
 
 // Création du bouton OK
-const submitButton2 = document.createElement("input");
-submitButton2.setAttribute("type", "submit");
+const submitButton2 = document.createElement("button");
+submitButton2.textContent="OK";
 submitButton2.classList.add("btn-submit", "button");
-submitButton2.setAttribute("value", "OK");
+submitButton2.setAttribute("id","subButton");
 modalBody.appendChild(submitButton2);
 
 // Insertion du contenu juste après le bouton close
@@ -80,6 +76,9 @@ validateModal.appendChild(contentValidModal);
 
 //On insert la modal juste après modalBg
 modalbg.insertAdjacentElement("afterend",validateModal);
+
+//on sélectionne le bouton après sa création
+const subButton = document.getElementById("subButton");
 //------------------- FIN CREATION MODAL 2-------------------
 
 //Selection de tous les boutons closes
@@ -115,6 +114,13 @@ closeButton.forEach((item)=> {
   });
 });
 
+//CHECK button modal 2
+subButton.addEventListener("click",function(){
+  console.log("click")
+  const modal = subButton.closest(".bground");
+  monFormulaire.reset();
+  modal.style.display="none";
+});
 
 // launch modal form
 function launchModal() {
@@ -305,6 +311,7 @@ function toutesLesValeursSontVraies(valideForm) {
 
 //Alert quand bouton submit cliqué
 submitButton.addEventListener("click",function(event){
+  console.log(monFormulaire)
   console.log(birthDate.value)
   if(regexName.test(firstName.value)==true){
     valideForm["first"] == true;
@@ -335,11 +342,11 @@ submitButton.addEventListener("click",function(event){
   checkRadio();
 
   if (toutesLesValeursSontVraies(valideForm)) {
-    
+
     //affichage de la modal
     validateModal.style.display="block";
     modalbg.style.display="none";
-    
+
     event.preventDefault();
   }
   else {
