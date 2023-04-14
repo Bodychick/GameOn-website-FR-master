@@ -8,10 +8,15 @@ function editNav() {
 }
 
 // DOM Elements
-const closeButton = document.querySelector(".close");
-const modalbg = document.querySelector(".bground");
+
+//Sélection de toutes les modals
+const modals = document.querySelectorAll(".bg-ground");
+
+// Sélection des modals séparemment pour gérer l'affichage au submit
+const modalbg = document.getElementById("modal-bg-ground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
+
 const radios = document.querySelectorAll("input[type=radio]");
 const formDataRadio = document.getElementById("formDataRadio");
 
@@ -28,7 +33,7 @@ const jour = String(today.getDate()).padStart(2, '0');
 const todaysDate = `${annee}-${mois}-${jour}`;
 birthDate.max = todaysDate;
 
-var valideForm = {
+let valideForm = {
   "first":false,
   "last":false,
   "email":false,
@@ -38,6 +43,48 @@ var valideForm = {
   "checkbox1":false,
 }
 
+//------------ DEBUT CREATION MODAL 2 -----------------
+//On créé la div modal global
+const validateModal = document.createElement("div");
+validateModal.setAttribute("id","validateModal");
+validateModal.classList.add("bground");
+
+//On créé la div qui va devenir le child dans la modale
+const contentValidModal = document.createElement("div");
+contentValidModal.classList.add("content");
+
+//Ajout du bouton close dans le content
+const closeButtonModal = document.createElement("span")
+closeButtonModal.classList.add("close");
+
+//Ajout du content 
+const modalBody = document.createElement("div");
+modalBody.classList.add("modal-body");
+const title = document.createElement("h1")
+title.innerHTML="Merci de votre visite";
+title.classList.add("center")
+modalBody.appendChild(title);
+
+// Création du bouton OK
+const submitButton2 = document.createElement("input");
+submitButton2.setAttribute("type", "submit");
+submitButton2.classList.add("btn-submit", "button");
+submitButton2.setAttribute("value", "OK");
+modalBody.appendChild(submitButton2);
+
+// Insertion du contenu juste après le bouton close
+contentValidModal.appendChild(closeButtonModal);
+contentValidModal.appendChild(modalBody);
+
+validateModal.appendChild(contentValidModal);
+
+//On insert la modal juste après modalBg
+modalbg.insertAdjacentElement("afterend",validateModal);
+//------------------- FIN CREATION MODAL 2-------------------
+
+//Selection de tous les boutons closes
+const closeButton = document.querySelectorAll(".close");
+
 //Check RADIO
 let isRadioChecked=false;
 
@@ -46,8 +93,8 @@ const checkbox1=document.getElementById("checkbox1");
 const checkbox1Label=document.querySelector(".checkbox2-label");
 
 //CONST REGEX
-const regexName =/^[a-zA-Z-]{3,}$/;
-const regexMail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
+const regexName =/^[a-zA-Z-éèê]{2,}$/;
+const regexMail =/^[a-zA-Z0-9.éèê_+-]+@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/;
 
 //Nombre d'évènements déjà participé
 const quantity = document.getElementById("quantity");
@@ -58,9 +105,16 @@ const submitButton = document.querySelector(".btn-submit");
 // close modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
-closeButton.addEventListener("click",function closeModal() {
-  modalbg.style.display="none";
+closeButton.forEach((item)=> {
+  item.addEventListener("click",function closeModal() {
+    console.log("ça clique sur le bouton")
+     // Cible la modale parente du bouton
+     const modal = item.closest('.bground');
+     // Masque la modale
+     modal.style.display = 'none';
+  });
 });
+
 
 // launch modal form
 function launchModal() {
@@ -95,7 +149,7 @@ function testEmail(){
   }
 }
 
-/* CHECK SI DATE DE NAISSANCE */
+/* VERIFIER SI DATE DE NAISSANCE */
 birthDate.addEventListener("change", checkBirthDate);
 
 function checkBirthDate(){
@@ -107,7 +161,7 @@ function checkBirthDate(){
     valideForm["birthDate"]=false;
   }
   else if(dateOfBirth >= todaysDate && document.getElementById("birthdateID")!= null){
-    //DO NOTHING parce que il y a déjà un message d'affiché
+    //Ne rien faire parce que il y a déjà un message d'affiché
     console.log("On laisse tout si message et date tjs today ou sup")
     valideForm["birthDate"]=false;
   }
@@ -157,7 +211,7 @@ function checkName($name,$id) {
   if (regexName.test($name.value) == false && document.getElementById($id) == null )
   {
     valideForm[$name.name]=false;
-    createElement("p",$id,$name,"3 caractères minimum sont nécessaires pour ce champ");
+    createElement("p",$id,$name,"2 caractères minimum sont nécessaires pour ce champ");
   }
   else if(regexName.test($name.value) == true && document.getElementById($id) != null) {
     valideForm[$name.name]=true;
@@ -177,6 +231,7 @@ radios.forEach((item)=> {
   })
 });
 
+//
 function checkRadio(){
   valideForm["lieu"]=false;
   radios.forEach((item)=> {
@@ -232,11 +287,12 @@ function createElement($typeElem="p",$id="",$element,$message="Veuillez saisir u
   $element.insertAdjacentElement("afterend", errorMessage);
 }
 
+// Vérifier si l'email est valide en utilisant test() de RegExp
 function isValidateEmail(email) {
-  // Vérifier si l'email est valide en utilisant test() de RegExp
   return regexMail.test(email);
 }
 
+//Verifier si tous les éléments du tableau de vérification
 function toutesLesValeursSontVraies(valideForm) {
   for (var val in valideForm) {
     if (valideForm[val] === false) {
@@ -245,6 +301,7 @@ function toutesLesValeursSontVraies(valideForm) {
   }
   return true;
 }
+
 
 //Alert quand bouton submit cliqué
 submitButton.addEventListener("click",function(event){
@@ -276,15 +333,18 @@ submitButton.addEventListener("click",function(event){
   checkConditions();
   checkQuantity();
   checkRadio();
-  console.log(valideForm)
+
   if (toutesLesValeursSontVraies(valideForm)) {
+    
+    //affichage de la modal
+    validateModal.style.display="block";
     modalbg.style.display="none";
-    alert('Formulaire envoyé avec succès');
+    
+    event.preventDefault();
   }
   else {
     event.preventDefault();
   }
-
 
 });
 
