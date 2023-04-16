@@ -9,6 +9,8 @@ function editNav() {
 
 // DOM Elements
 // Sélection des modals séparemment pour gérer l'affichage au submit
+//const subButton = document.getElementById("subButton");
+
 const modalbg = document.getElementById("modal-bg-ground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const monFormulaire = document.getElementsByName("reserve");
@@ -38,48 +40,6 @@ let valideForm = {
   "lieu":false,
   "checkbox1":false,
 }
-
-//------------ DEBUT CREATION MODAL 2 -----------------
-//On créé la div modal global
-const validateModal = document.createElement("div");
-validateModal.setAttribute("id","validateModal");
-validateModal.classList.add("bground");
-
-//On créé la div qui va devenir le child dans la modale
-const contentValidModal = document.createElement("div");
-contentValidModal.classList.add("content");
-
-//Ajout du bouton close dans le content
-const closeButtonModal = document.createElement("span")
-closeButtonModal.classList.add("close");
-
-//Ajout du content 
-const modalBody = document.createElement("div");
-modalBody.classList.add("modal-body");
-const title = document.createElement("h1")
-title.innerHTML="Merci de votre visite";
-title.classList.add("center")
-modalBody.appendChild(title);
-
-// Création du bouton OK
-const submitButton2 = document.createElement("button");
-submitButton2.textContent="OK";
-submitButton2.classList.add("btn-submit", "button");
-submitButton2.setAttribute("id","subButton");
-modalBody.appendChild(submitButton2);
-
-// Insertion du contenu juste après le bouton close
-contentValidModal.appendChild(closeButtonModal);
-contentValidModal.appendChild(modalBody);
-
-validateModal.appendChild(contentValidModal);
-
-//On insert la modal juste après modalBg
-modalbg.insertAdjacentElement("afterend",validateModal);
-
-//on sélectionne le bouton après sa création
-const subButton = document.getElementById("subButton");
-//------------------- FIN CREATION MODAL 2-------------------
 
 //Selection de tous les boutons closes
 const closeButton = document.querySelectorAll(".close");
@@ -114,13 +74,61 @@ closeButton.forEach((item)=> {
   });
 });
 
-//CHECK button modal 2
-subButton.addEventListener("click",function(){
-  console.log("click")
-  const modal = subButton.closest(".bground");
-  monFormulaire.reset();
-  modal.style.display="none";
-});
+function createModal(){
+  
+  modalbg.style.display="none";
+  //------------ DEBUT CREATION MODAL 2 -----------------
+  //On créé la div modal global
+  const validateModal = document.createElement("div");
+  validateModal.setAttribute("id","validateModal");
+  validateModal.classList.add("bground");
+
+  //On créé la div qui va devenir le child dans la modale
+  const contentValidModal = document.createElement("div");
+  contentValidModal.classList.add("content");
+
+  //Ajout du bouton close dans le content
+  const closeButtonModal = document.createElement("span")
+  closeButtonModal.classList.add("close");
+
+  //Ajout du content 
+  const modalBody = document.createElement("div");
+  modalBody.classList.add("modal-body");
+  const title = document.createElement("h1")
+  title.innerHTML="Merci de votre visite";
+  title.classList.add("center")
+  modalBody.appendChild(title);
+
+  // Création du bouton OK
+  const submitButton2 = document.createElement("button");
+  submitButton2.textContent="OK";
+  submitButton2.classList.add("btn-submit", "button");
+  submitButton2.setAttribute("id","subButton");
+  modalBody.appendChild(submitButton2);
+
+  // Insertion du contenu juste après le bouton close
+  contentValidModal.appendChild(closeButtonModal);
+  contentValidModal.appendChild(modalBody);
+
+  validateModal.appendChild(contentValidModal);
+
+  //On insert la modal juste après modalBg
+  modalbg.insertAdjacentElement("afterend",validateModal);
+
+  //on sélectionne le bouton après sa création
+ 
+  //------------------- FIN CREATION MODAL 2-------------------
+  validateModal.style.display="block";
+
+  const subButton = document.getElementById("subButton");
+
+  subButton.addEventListener("click",function(){
+    console.log("click");
+   console.log(document.getElementById("validateModal"));
+    document.getElementsByName("reserve")[0].reset();
+    document.getElementById("validateModal").remove();
+  });
+}
 
 // launch modal form
 function launchModal() {
@@ -344,8 +352,7 @@ submitButton.addEventListener("click",function(event){
   if (toutesLesValeursSontVraies(valideForm)) {
 
     //affichage de la modal
-    validateModal.style.display="block";
-    modalbg.style.display="none";
+    createModal();
 
     event.preventDefault();
   }
