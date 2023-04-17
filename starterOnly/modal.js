@@ -75,7 +75,6 @@ closeButton.forEach((item)=> {
 });
 
 function createModal(){
-  
   modalbg.style.display="none";
   //------------ DEBUT CREATION MODAL 2 -----------------
   //On créé la div modal global
@@ -85,17 +84,20 @@ function createModal(){
 
   //On créé la div qui va devenir le child dans la modale
   const contentValidModal = document.createElement("div");
-  contentValidModal.classList.add("content");
+  contentValidModal.classList.add("content", "flex");
 
   //Ajout du bouton close dans le content
   const closeButtonModal = document.createElement("span")
   closeButtonModal.classList.add("close");
+  closeButtonModal.setAttribute("id","close")
+  const closeBox=document.createElement("div");
+  closeBox.appendChild(closeButtonModal);
 
   //Ajout du content 
   const modalBody = document.createElement("div");
   modalBody.classList.add("modal-body");
   const title = document.createElement("h1")
-  title.innerHTML="Merci de votre visite";
+  title.innerHTML="Merci pour votre inscription";
   title.classList.add("center")
   modalBody.appendChild(title);
 
@@ -104,11 +106,11 @@ function createModal(){
   submitButton2.textContent="OK";
   submitButton2.classList.add("btn-submit", "button");
   submitButton2.setAttribute("id","subButton");
-  modalBody.appendChild(submitButton2);
 
   // Insertion du contenu juste après le bouton close
-  contentValidModal.appendChild(closeButtonModal);
+  contentValidModal.appendChild(closeBox);
   contentValidModal.appendChild(modalBody);
+  contentValidModal.appendChild(submitButton2);
 
   validateModal.appendChild(contentValidModal);
 
@@ -124,7 +126,20 @@ function createModal(){
 
   subButton.addEventListener("click",function(){
     console.log("click");
-   console.log(document.getElementById("validateModal"));
+    console.log(document.getElementById("validateModal"));
+    document.getElementsByName("reserve")[0].reset();
+    document.getElementById("validateModal").remove();
+  });
+
+  console.log("je suis entre les 2 listener");
+
+  const closeButton2emeModal=document.getElementById("close");
+
+  closeButton2emeModal.addEventListener("click",function closeModal() {
+    console.log("ça clique sur le bouton")
+    // Cible la modale parente du bouton
+    //const modal = item.closest('.bground');
+    // Masque la modale
     document.getElementsByName("reserve")[0].reset();
     document.getElementById("validateModal").remove();
   });

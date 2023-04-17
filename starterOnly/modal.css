@@ -153,14 +153,22 @@ main {
   margin: 5% auto;
   width: 100%;
   max-width: 500px;
+  height: 80%;
   animation-name: modalopen;
   animation-duration: var(--modal-duration);
   background: #232323;
   border-radius: 10px;
-  overflow: hidden;
+  overflow:scroll;
   position: relative;
   color: #fff;
   padding-top: 10px;
+  padding: 50px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .modal-body {
@@ -490,6 +498,12 @@ footer {
 } 
 
 @media screen and (max-width: 800px) {
+  .content{
+    width: 100%;
+    height: 100%;
+    margin: 90px 0 0 0 ;
+    max-width:100%;
+  }
   .hero-section {
     display: block;
     box-shadow: unset;
